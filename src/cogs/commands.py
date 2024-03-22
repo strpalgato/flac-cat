@@ -25,7 +25,7 @@ class Commands(commands.Cog):
         with open("data/song_database.json", "r") as f:
             self.song_database = json.load(f)
 
-    @commands.command(help="Conecta el bot al canal de voz.")
+    @commands.command(brief="Conecta el bot al canal de voz.", help="Conecta el bot al canal de voz.", aliases=["j", "J"])
     async def join(self, ctx):
         if ctx.author.voice:
             channel = ctx.author.voice.channel
@@ -36,7 +36,7 @@ class Commands(commands.Cog):
         else:
             await ctx.send("Primero debes estar en un canal de voz.")
 
-    @commands.command(help="Desconecta el bot del canal de voz.")
+    @commands.command(brief="Desconecta el bot del canal de voz.", help="Desconecta el bot del canal de voz.",aliases=["l", "L"])
     async def leave(self, ctx):
         if ctx.voice_client:
             await ctx.voice_client.disconnect()
@@ -48,7 +48,7 @@ class Commands(commands.Cog):
         # Cancela el temporizador de desconexión si se ejecuta el comando !leave
         self.cancel_disconnect_timer()
 
-    @commands.command(help="Añade una canción por nombre de archivo.", aliases=["p", "P"])
+    @commands.command(brief="Añade una canción por nombre de archivo.", help="Añade una canción por nombre de archivo.\n\nParámetros:\n-s: Buscar por título de la canción.\n-a: Buscar por nombre del artista.\n-l: Buscar por nombre del álbum.", aliases=["p", "P"])
     async def play(self, ctx, *, query):
         # Convertir todos los comandos y argumentos a minúsculas
         query = query.lower()
@@ -70,7 +70,7 @@ class Commands(commands.Cog):
             # Crear un mensaje embed para notificar que la canción se ha agregado a la cola
             embed = discord.Embed(
                 title="Canción Agregada a la Cola",
-                description=f"La canción **{last_song_title}** perteneciente a **{last_artist}** se ha agregado a la cola.",
+                description=f"La canción **{last_song_title}** de **{last_artist}** se ha agregado a la cola.",
                 color=discord.Color.from_rgb(255, 255, 255)  # Color azul por defecto
             )
             await ctx.send(embed=embed)
@@ -186,7 +186,7 @@ class Commands(commands.Cog):
             # Si hay más canciones en la cola, reproducir la siguiente
             asyncio.run_coroutine_threadsafe(self.play_song(ctx), self.bot.loop)
 
-    @commands.command(help="Pausa la reproducción actual.")
+    @commands.command(brief="Pausa la reproducción actual.", help="Pausa la reproducción actual.")
     async def pause(self, ctx):
         if ctx.voice_client.is_playing() or ctx.voice_client.is_paused():
             ctx.voice_client.pause()
@@ -194,14 +194,14 @@ class Commands(commands.Cog):
         else:
             await ctx.send("No hay ninguna reproducción en curso.")
 
-    @commands.command(help="Reanuda la reproducción.")
+    @commands.command(brief="Reanuda la reproducción.", help="Reanuda la reproducción.")
     async def resume(self, ctx):
         if ctx.voice_client.is_paused():
             ctx.voice_client.resume()
         else:
             await ctx.send("La reproducción no está pausada.")
 
-    @commands.command(help="Salta la canción actual.", aliases=["s", "S"])
+    @commands.command(brief="Salta la canción actual.", help="Salta la canción actual.\n\nAbreviaciones: !skip, !s, !S", aliases=["s", "S"] )
     async def skip(self, ctx):
         if ctx.voice_client.is_playing():
             ctx.voice_client.stop()
